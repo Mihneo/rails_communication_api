@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  before_action :authorized, only: %i[show index]
-
   def index
     @users = User.all
 
@@ -8,17 +6,24 @@ class UsersController < ApplicationController
   end
 
   def show
-    render json: user
+    if User.exists?(id: params[:id])
+      render json: user
+    else
+      render json: {}, status: :not_found
+    end
   end
 
   def create
-    @user = User.new(user_params)
-
-    if @user.save
-      session[:user_id] = @user.id
-      render json: @user, status: :created, location: @user
+    if logged_in?
+      render json: {}, status: :forbidden
     else
-      render json: @user.errors, status: :unprocessable_entity
+      @user = User.new(user_params)
+      if @user.save
+        session[:user_id] = @user.id
+        render json: @user, status: :created, location: @user
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -31,7 +36,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
+    user
   end
 
   private
