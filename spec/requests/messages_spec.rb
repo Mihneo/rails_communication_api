@@ -29,6 +29,10 @@ RSpec.describe 'Message', type: :request do
         it 'should return error message' do
           expect(response).to_not be_successful
         end
+
+        it 'should return bad request' do
+          expect(response.status).to eq(400)
+        end
       end
     end
 
@@ -39,7 +43,7 @@ RSpec.describe 'Message', type: :request do
         expect(response).to_not be_successful
       end
 
-      it 'should create the new message' do
+      it 'should be unauthorized' do
         expect(response.status).to eq(401)
       end
     end
