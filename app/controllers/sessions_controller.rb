@@ -1,9 +1,9 @@
 class SessionsController < ApplicationController
   def create
     if User.exists?(username: session_params[:username])
-      authenticate_user(session_params)
+      authenticate_user
     else
-      create_user(session_params)
+      create_user
     end
   end
 
@@ -18,8 +18,8 @@ class SessionsController < ApplicationController
     params.require(:session).permit(:username, :password, :password_confirmation, :email, :timezone)
   end
 
-  def create_user(user_params)
-    @user = User.new(user_params)
+  def create_user
+    @user = User.new(session_params)
     if @user.save
       session[:user_id] = @user.id
       render json: @user, status: :created
@@ -28,7 +28,7 @@ class SessionsController < ApplicationController
     end
   end
 
-  def authenticate_user(session_params)
+  def authenticate_user
     @user = User.find_by(username: session_params[:username])
     if @user&.authenticate(session_params[:password])
       session[:user_id] = @user.id

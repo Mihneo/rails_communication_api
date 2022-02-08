@@ -6,9 +6,13 @@ RSpec.describe 'Session', type: :request do
 
   describe 'create' do
     context 'when new user' do
-      it 'should create the user' do
-        post sessions_path(session: new_user)
+      before(:each) { post sessions_path(session: new_user) }
+
+      it 'should be successful' do
         expect(response).to be_successful
+      end
+
+      it 'should create the new user' do
         expect(response.body).to include('New user')
       end
     end
