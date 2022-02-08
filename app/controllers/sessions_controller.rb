@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_before_action :logged_in?, only: :create
+
   def create
     if User.exists?(username: session_params[:username])
       authenticate_user
