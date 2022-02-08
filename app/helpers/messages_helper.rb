@@ -6,7 +6,7 @@ module MessagesHelper
         @message = Message.new(body: message_params[:body], sender_id: message_params[:sender_id],
                                receiver_id: receiver_id)
 
-        unless @message.save && User.exists?(id: receiver_id)
+        unless User.exists?(id: receiver_id) && @message.save
           is_successful = false
           raise ActiveRecord::Rollback
         end
