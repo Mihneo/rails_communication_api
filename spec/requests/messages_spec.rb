@@ -48,4 +48,49 @@ RSpec.describe 'Message', type: :request do
       end
     end
   end
+
+  describe 'index' do
+    before(:each) do
+      post sessions_path(session: existing_user)
+      post messages_path(message: message)
+    end
+
+    context 'when wants to read all messages' do
+      before(:each) { get messages_path }
+
+      it 'should be successful' do
+        expect(response).to be_successful
+      end
+
+      it 'should contain the message' do
+        expect(response.body).to include(message[:body])
+      end
+    end
+
+    context 'when wants to read new messages' do
+      before(:each) { get messages_path(unseen: 'true') }
+
+      context 'when having unseen messages' do
+        it 'should be successful' do
+          expect(response).to be_successful
+        end
+
+        it 'should contain the message' do
+          expect(response.body).to include(message[:body])
+        end
+      end
+
+      context 'when not having unseen messages' do
+        before(:each) { get messages_path(unseen: 'true') }
+
+        it 'should be successful' do
+          expect(response).to be_successful
+        end
+
+        it 'should be empty' do
+          expect(response.body).to eq('[]')
+        end
+      end
+    end
+  end
 end

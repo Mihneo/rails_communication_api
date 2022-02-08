@@ -1,4 +1,13 @@
 class MessagesController < ApplicationController
+  after_action :set_seen, only: [:index]
+
+  def index
+    @messages = Message.where(receiver_id: current_user.id)
+    @messages = @messages.unseen if params[:unseen] == 'true'
+
+    render json: @messages, status: :ok
+  end
+
   def create
     is_successful = MessagesHelper.send_messages(message_params.merge(sender_id: current_user.id))
     if is_successful
@@ -12,5 +21,9 @@ class MessagesController < ApplicationController
 
   def message_params
     params.require(:message).permit(:body, receiver_ids: [])
+  end
+
+  def set_seen
+    @messages.update_all(seen: true) if params[:unseen] == 'true'
   end
 end
