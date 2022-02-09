@@ -9,7 +9,7 @@ class MessagesController < ApplicationController
   end
 
   def create
-    is_successful = MessagesHelper.send_messages(message_params.merge(sender_id: current_user.id))
+    is_successful = MessagesService.send_messages(message_params)
     if is_successful
       render json: { "Status:": 'All messages sent successfully!' }, status: :created
     else
@@ -20,7 +20,7 @@ class MessagesController < ApplicationController
   private
 
   def message_params
-    params.require(:message).permit(:body, receiver_ids: [])
+    params.require(:message).permit(:body, receiver_ids: []).merge(sender_id: current_user.id)
   end
 
   def set_seen

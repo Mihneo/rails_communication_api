@@ -1,4 +1,4 @@
-module MessagesHelper
+class MessagesService
   def self.send_messages(message_params)
     is_successful = true
     ActiveRecord::Base.transaction do

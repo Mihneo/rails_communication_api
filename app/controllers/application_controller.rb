@@ -1,9 +1,11 @@
 class ApplicationController < ActionController::API
-  before_action :logged_in?, except: %i[current_user authorized]
+  before_action :logged_in?
 
   def logged_in?
     render json: {}, status: :unauthorized unless session[:user_id].present?
   end
+
+  private
 
   def current_user
     @current_user ||= User.find(session[:user_id])
