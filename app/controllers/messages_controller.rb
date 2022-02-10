@@ -4,12 +4,11 @@ class MessagesController < ApplicationController
     @messages = @messages.unseen if params[:unseen] == 'true'
     @messages.map { |message| message.update(seen: true) }
 
-    # json_string = MessageSerializer.new(@messages).serializable_hash.to_json
     render json: @messages, status: :ok
   end
 
   def create
-    is_successful = MessagesService.send_messages(message_params)
+    is_successful = MessagesService.new(message_params).send_messages
     if is_successful
       render json: { "Status:": 'All messages sent successfully!' }, status: :created
     else
