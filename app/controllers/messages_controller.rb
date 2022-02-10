@@ -4,6 +4,7 @@ class MessagesController < ApplicationController
     @messages = @messages.unseen if params[:unseen] == 'true'
     @messages.map { |message| message.update(seen: true) }
 
+    # json_string = MessageSerializer.new(@messages).serializable_hash.to_json
     render json: @messages, status: :ok
   end
 

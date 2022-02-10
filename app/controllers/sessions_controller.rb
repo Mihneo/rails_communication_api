@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
   private
 
   def session_params
-    params.require(:session).permit(:username, :password, :password_confirmation, :email, :time_zone)
+    params.require(:session).permit(:username, :password, :password_confirmation, :email, :timezone)
   end
 
   def create_user
