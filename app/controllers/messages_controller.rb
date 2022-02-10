@@ -1,9 +1,8 @@
 class MessagesController < ApplicationController
-  after_action :set_seen, only: [:index]
-
   def index
     @messages = Message.where(receiver_id: current_user.id)
     @messages = @messages.unseen if params[:unseen] == 'true'
+    @messages.map { |message| message.update(seen: true) }
 
     render json: @messages, status: :ok
   end
@@ -21,9 +20,5 @@ class MessagesController < ApplicationController
 
   def message_params
     params.require(:message).permit(:body, receiver_ids: []).merge(sender_id: current_user.id)
-  end
-
-  def set_seen
-    @messages.update_all(seen: true) if params[:unseen] == 'true'
   end
 end
